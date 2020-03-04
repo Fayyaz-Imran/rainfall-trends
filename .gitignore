@@ -119,3 +119,6 @@ dmypy.json
 
 # vscode
 .vscode
+
+pdf-downloads/
+pdf_urls.txt

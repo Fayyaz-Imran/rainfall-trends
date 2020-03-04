@@ -27,7 +27,7 @@ def download_dataset():
 #Combine CSV
 def combine_dataset():
     #set working directory
-    os.chdir(r"C:\Users\SSDU A&R-2\Documents\Workspace\SCADA\pdf-downloads")
+    os.chdir(r"\\path\pdf-downloads")
     #find all csv files in the folder
     #save result in list -> list_of_files
     extension = 'csv'
@@ -43,7 +43,7 @@ def combine_dataset():
         else:
             no_data.append(x)
 
-    with_data.remove('output-3013002.csv')
+    #with_data.remove('output-3013002.csv')
 
     #Combine all files in the list
     combined_csv = pd.concat([pd.read_csv(f) for f in with_data ])
@@ -52,7 +52,7 @@ def combine_dataset():
 
 #Rename File with Date
 def rename_file():
-    os.chdir(r"C:\Users\SSDU A&R-2\Documents\Workspace\SCADA\pdf-downloads")
+    os.chdir(r"\\path\pdf-downloads")
     current_date = datetime.datetime.today().strftime ('%d-%b-%Y')
     os.rename('combined_csv.csv', r'combined_csv_' + str(current_date) + '.csv')
     print("Combination complete")
