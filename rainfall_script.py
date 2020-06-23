@@ -3,6 +3,9 @@ import requests as req
 import os, glob
 import tabula
 import datetime
+import boto3
+from botocore.exceptions import ClientError
+import logging
 
 url = 'http://jpsscada.selangor.gov.my/PDFGen?trendType=RF&Id='
 #Station ID
@@ -55,15 +58,41 @@ def rename_file():
     os.chdir(r"\\path\pdf-downloads")
     current_date = datetime.datetime.today().strftime ('%d-%b-%Y')
     os.rename('combined_csv.csv', r'combined_csv_' + str(current_date) + '.csv')
+    file_name = 'combined_csv_' + str(current_date) + '.csv'
     print("Combination complete")
+    return file_name
+
+
+def upload_to_aws(file_name, object_name=None):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = file_name
+
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_file(file_name, 'ssdu-rainfall', object_name)
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
 
 #Run Script
 def main():
     download_dataset()
     combine_dataset()
-    rename_file()
+    file_name = rename_file()
+    upload_to_aws(file_name, object_name=None)
+    print("Upload complete")
+    os.remove(file_name)
 
 if __name__ == "__main__":
     main()
-
-    
