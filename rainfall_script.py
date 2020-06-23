@@ -30,7 +30,8 @@ def download_dataset():
 #Combine CSV
 def combine_dataset():
     #set working directory
-    os.chdir(r"\\path\pdf-downloads")
+    os.chdir(r"pdf-downloads")
+    os.getcwd()
     #find all csv files in the folder
     #save result in list -> list_of_files
     extension = 'csv'
@@ -46,6 +47,7 @@ def combine_dataset():
         else:
             no_data.append(x)
 
+    with_data
     #with_data.remove('output-3013002.csv')
 
     #Combine all files in the list
@@ -55,13 +57,12 @@ def combine_dataset():
 
 #Rename File with Date
 def rename_file():
-    os.chdir(r"\\path\pdf-downloads")
+    os.getcwd()
     current_date = datetime.datetime.today().strftime ('%d-%b-%Y')
     os.rename('combined_csv.csv', r'combined_csv_' + str(current_date) + '.csv')
     file_name = 'combined_csv_' + str(current_date) + '.csv'
     print("Combination complete")
     return file_name
-
 
 def upload_to_aws(file_name, object_name=None):
     """Upload a file to an S3 bucket
@@ -91,7 +92,7 @@ def main():
     combine_dataset()
     file_name = rename_file()
     upload_to_aws(file_name, object_name=None)
-    print("Upload complete")
+    print("Upload Complete")
     os.remove(file_name)
 
 if __name__ == "__main__":
